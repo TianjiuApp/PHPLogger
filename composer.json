@@ -1,0 +1,26 @@
+{
+    "name": "tianjiuapp/php-logger",
+    "description": "This is PHP based logger",
+    "type": "library",
+    "require": {
+        "php": ">=8.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PHPLogger\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TianjiuAppTeam",
+            "email": "tianjiuapp@126.com",
+            "homepage": "https://tianjiu.com.mp"
+        },
+        {
+            "name": "budingxiaocai",
+            "email": "budingxiaocai@yeah.net"
+        }
+    ],
+    "minimum-stability" : "dev"
+}
