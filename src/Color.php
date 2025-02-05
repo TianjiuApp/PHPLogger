@@ -14,6 +14,7 @@
 
     namespace PHPLogger;
 
+    use AllowDynamicProperties;
     use PHPLogger\AnsiCodes\TerminalFontTypes;
 
     /**
@@ -28,19 +29,38 @@
         public static string $ansiCode = "";
 
         /**
-         * 返回一个带颜色的字符串
+         * 构造函数执行后返回的结果
+         * @var string
+         */
+        private string $finalData;
+
+        /**
+         * 构造函数 返回一个带颜色的字符串
          * @param string $data 要输出的数据
          * @param string|null $terminalFontColor 终端字体颜色
          * @param string|null $terminalForegroundColor 终端字体背景颜色
          * @param array|null $terminalFontTypes 终端字体类型
          */
-        public function __toString(
+        public function __construct(
             string $data = "Hello World!",
             string|null $terminalFontColor = "Default",
             string|null $terminalForegroundColor = "Default",
             array|null $terminalFontTypes = null
         ) {
-            return self::get($data,$terminalFontColor,$terminalForegroundColor,$terminalFontTypes);
+            $this->finalData = self::get(
+                $data,
+                $terminalFontColor,
+                $terminalForegroundColor,
+                $terminalFontTypes
+            );
+        }
+
+        /**
+         * 返回最终的结果
+         * @return string
+         */
+        public function __toString() {
+            return $this->finalData;
         }
 
         /**

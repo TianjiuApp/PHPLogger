@@ -15,15 +15,16 @@
     namespace PHPLogger;
 
     interface ColorInterface {
+
         /**
-         * 构造函数
+         * 构造函数 返回一个带颜色的字符串
          * @param string $data 要输出的数据
          * @param string|null $terminalFontColor 终端字体颜色
          * @param string|null $terminalForegroundColor 终端字体背景颜色
          * @param array|null $terminalFontTypes 终端字体类型
          */
-        public function __toString(
-            string $data = "Hello World!",
+        public function __construct(
+            string $data,
             string|null $terminalFontColor = "default",
             string|null $terminalForegroundColor = "default",
             array|null $terminalFontTypes = null
