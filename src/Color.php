@@ -1,0 +1,158 @@
+<?php
+    /**
+     * This file is part of PHPLogger.
+     *
+     * Licensed under The MIT License
+     * For full copyright and license information, please see the "LICENSE" File
+     * Redistributions of files must retain the above copyright notice.
+     *
+     * @author    budingxiaocai<budingxiaocai@yeah.net>
+     * @copyright TianjiuApp Team
+     * @link      https://os.tianjiu.com.mp/PHPLogger
+     * @license   MIT License
+     */
+
+    namespace PHPLogger;
+
+    use PHPLogger\AnsiCodes\TerminalFontTypes;
+
+    /**
+     * 颜色类
+     */
+    class Color implements ColorInterface {
+
+        /**
+         * Ansi Code
+         * @var string
+         **/
+        public static string $ansiCode = "";
+
+        /**
+         * 返回一个带颜色的字符串
+         * @param string $data 要输出的数据
+         * @param string|null $terminalFontColor 终端字体颜色
+         * @param string|null $terminalForegroundColor 终端字体背景颜色
+         * @param array|null $terminalFontTypes 终端字体类型
+         */
+        public function __toString(
+            string $data = "Hello World!",
+            string|null $terminalFontColor = "Default",
+            string|null $terminalForegroundColor = "Default",
+            array|null $terminalFontTypes = null
+        ) {
+            return self::get($data,$terminalFontColor,$terminalForegroundColor,$terminalFontTypes);
+        }
+
+        /**
+         * 返回一个带颜色的字符串
+         * @param string $data 要输出的数据
+         * @param string|null $terminalFontColor 终端字体颜色
+         * @param string|null $terminalForegroundColor 终端字体背景颜色
+         * @param array|null $terminalFontTypes 终端字体类型
+         */
+        public static function get(
+            string $data = "Hello World!",
+            string|null $terminalFontColor = "Default",
+            string|null $terminalForegroundColor = "Default",
+            array|null $terminalFontTypes = null
+        ) :string {
+            self::setAnsiCode();
+
+            if (!self::$ansiCode) {
+                return $data;
+            }
+
+            $terminalFontColor = ucfirst(strtolower($terminalFontColor));
+            $terminalForegroundColor = ucfirst(strtolower($terminalForegroundColor));
+
+            $finalData = self::$ansiCode;
+            $finalData .= defined("PHPLogger\AnsiCodes\TerminalFontColors::$terminalFontColor")
+                ? constant("PHPLogger\AnsiCodes\TerminalFontColors::$terminalFontColor")->value.';'
+                : $terminalFontColor.';';
+
+            $finalData .= defined("PHPLogger\AnsiCodes\TerminalBackgroundColor::$terminalForegroundColor")
+                ? constant("PHPLogger\AnsiCodes\TerminalBackgroundColor::$terminalForegroundColor")->value
+                : $terminalFontColor;
+
+            if (!empty($terminalFontTypes)) {
+                foreach ($terminalFontTypes as $terminalFontType) {
+                    if (!is_string($terminalFontType)) continue;
+
+                    $terminalFontType = ucfirst(strtolower($terminalFontType));
+                    $finalData .= defined("PHPLogger\AnsiCodes\TerminalFontTypes::$terminalFontType")
+                        ? ';' . constant("PHPLogger\AnsiCodes\TerminalFontTypes::$terminalFontType")->value
+                        : ';' . $terminalFontType;
+                }
+            }
+
+            $finalData .= 'm' . $data . self::$ansiCode . TerminalFontTypes::End->value . 'm';
+            return $finalData;
+        }
+
+        /**
+         * 在Windows平台下获取Ansi Code
+         * @return false|string
+         */
+        public static function getAnsiCodeForWindows():false|string {
+            // 解析输出以获取构建号
+            if (preg_match('/build (\d+) \(/',php_uname('v'),$matches)) $build = $matches[1];
+            else return false;
+
+            // 检查 ConsoleHost v2 是否可用
+            if ($build >= 10586) {
+                $isV2 = true;
+                // 检查注册表项 ForceV2 的值
+                $regOutput = [];
+                exec('reg query HKCU\\Console /v ForceV2',$regOutput);
+                foreach ($regOutput as $line) {
+                    if (str_contains($line,'0x0')) {
+                        $isV2 = false;
+                        break;
+                    }
+                }
+            } else $isV2 = false;
+
+            if ($isV2) {
+                exec("for /f %a in ('echo prompt \$E ^| cmd') do echo %a", $promptOutput);
+                return $promptOutput[count($promptOutput)-1];
+            } else return false;
+        }
+
+        /**
+         * 返回终端光标动作代码
+         * @param string $terminalCursorType 终端光标动作类型
+         * @param string ...$terminalCursorArgs 终端光标动作参数
+         * @return string
+         */
+        public static function terminalCursorAction(string $terminalCursorType,string ...$terminalCursorArgs):string {
+            self::setAnsiCode();
+
+            if (!self::$ansiCode) return "";
+
+            if (defined("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")) {
+                $terminalCursorTypeData = explode(',',constant("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")->value);
+                $terminalCursorActionData = $terminalCursorTypeData[0];
+
+                if (count($terminalCursorTypeData) > 1) {
+                    $terminalCursorTypeArgs = array_slice($terminalCursorTypeData,1);
+                    $terminalCursorActionData = str_replace($terminalCursorTypeArgs,$terminalCursorArgs,$terminalCursorActionData);
+                }
+
+                return self::$ansiCode.$terminalCursorActionData;
+            } else return self::$ansiCode.$terminalCursorType;
+        }
+
+        /**
+         * 在对象中设置Ansi代码
+         * @return void
+         */
+        private static function setAnsiCode():void {
+            if (empty(self::$ansiCode)) {
+                if (strtoupper(substr(PHP_OS,0,3)) === 'WIN') {
+                    self::$ansiCode = self::getAnsiCodeForWindows().'[';
+                } else if (strtoupper(substr(PHP_OS,0,3)) === 'LIN') {
+                    self::$ansiCode = "\033[";
+                }
+            }
+        }
+    }
