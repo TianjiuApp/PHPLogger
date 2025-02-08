@@ -144,7 +144,7 @@
          * @param string ...$terminalCursorArgs 终端光标动作参数
          * @return string
          */
-        public static function terminalCursorAction(string $terminalCursorType,string ...$terminalCursorArgs):string {
+        public static function terminalCursorAction(string $terminalCursorType,string|int ...$terminalCursorArgs):string {
             self::setAnsiCode();
 
             if (!self::$ansiCode) return "";

@@ -1,5 +1,15 @@
 <?php
     /**
+     *
+     * ______  _   _ ______  _
+     * | ___ \| | | || ___ \| |
+     * | |_/ /| |_| || |_/ /| |      ___    __ _   __ _   ___  _ __
+     * |  __/ |  _  ||  __/ | |     / _ \  / _` | / _` | / _ \| '__|
+     * | |    | | | || |    | |____| (_) || (_| || (_| ||  __/| |
+     * \_|    \_| |_/\_|    \_____/ \___/  \__, | \__, | \___||_|
+     *                                      __/ |  __/ |
+     *                                     |___/  |___/
+     *
      * This file is part of PHPLogger.
      *
      * Licensed under The MIT License
@@ -15,123 +25,130 @@
     namespace PHPLogger\Config;
 
     use PHPLogger\LoggerStyles;
+    use PHPLogger\Config\LoggerConfigInterface;
+    use PHPLogger\Config\Default\LoggerConfig as DefaultLoggerConfig;
     use \Error;
 
     /**
      * Config Class for Logger
      */
-    class LoggerConfig {
-        /** 是否创建日志文件 @var bool  */
-        private bool $enabledCreateLogFile ;
-
-        /** 日志文件路径 @var string  */
-        private string $logFile;
+    class LoggerConfig implements LoggerConfigInterface {
 
         /** 是否输出到终端 @var bool  */
         private bool $enabledConsoleLog;
 
-        /** 是否显示日期 @var bool  */
-        private bool $showDate;
+        /** 在终端的类别配置 @var array  */
+        private array $inTerminalConfig;
 
-        /** 是否显示日志级别 @var bool  */
-        private bool $showLevel;
+        /** 在日志文件中的类别配置 @var array  */
+        private array $inLogFileConfig;
 
         /** 日志样式 @var array  */
         private array $logStyles;
 
-        /** 默认日志文件路径 @var string  */
-        private static string $defaultLogFile = '';
+        /** 所有已记录的日志文件句柄 @var array  */
+        private static array $allLogFileHandles = [];
 
-        /** 默认日志样式 @var array  */
-        private const array defaultLogStyles = [
-            LoggerStyles::Info->value => ['While','Default',null],
-            LoggerStyles::Warning->value => ['Yellow','Default',null],
-            LoggerStyles::Error->value => ['Red','Default',["Bold"]],
-            LoggerStyles::Debug->value => ['Blue','Default',["Bold"]],
-            LoggerStyles::Notice->value => ['Green','Default',["Bold"]],
-            LoggerStyles::Critical->value => ['Red','Default',null],
-        ];
+        /** 日志文件句柄 */
+        private $logFileHandle = null;
 
         /**
          * 设置Logger配置
-         * @param bool $enabledCreateLogFile 是否创建日志文件
-         * @param string $logFile 日志文件路径
          * @param bool $enabledConsoleLog 是否输出到终端
-         * @param bool $showDate 是否显示日期
-         * @param bool $showLevel 是否显示日志级别
-         * @param array $logStyles 日志样式
+         * @param array|null $inTerminalConfig 在终端的类别配置
+         * @param array|null $inLogFileConfig 在日志文件中的类别配置
+         * @param string|null $logFile 日志文件路径
+         * @param array|null $logStyles 日志样式
          */
         public function __construct(
-            bool $enabledCreateLogFile = true,
-            string $logFile = '',
             bool $enabledConsoleLog = true,
-            bool $showDate = true,
-            bool $showLevel = true,
-            array $logStyles = self::defaultLogStyles
+            array|null $inTerminalConfig = DefaultLoggerConfig::defaultTerminalConfig,
+            array|null $inLogFileConfig = DefaultLoggerConfig::defaultLogFileConfig,
+            string|null $logFile = null,
+            array|null $logStyles = DefaultLoggerConfig::defaultLogStyles
         ) {
-            $this->enabledCreateLogFile = $enabledCreateLogFile;
             $this->enabledConsoleLog = $enabledConsoleLog;
-            $this->showDate = $showDate;
-            $this->showLevel = $showLevel;
-            $this->logStyles = $logStyles;
+            $this->inTerminalConfig = $inTerminalConfig ?? DefaultLoggerConfig::defaultTerminalConfig;
+            $this->inLogFileConfig = $inLogFileConfig ?? DefaultLoggerConfig::defaultLogFileConfig;
+            $this->logStyles = $logStyles ?? DefaultLoggerConfig::defaultLogStyles;
 
-            if ($enabledCreateLogFile) {
-                if (!empty($logFile)) {
-                    $this->logFile = $logFile;
-                    $this->addFile($logFile);
-                } else {
-                    if (empty(self::$defaultLogFile)) {
-                        $this->logFile = self::$defaultLogFile = getcwd() . '/logs/log-' . date('Y-m-d-H-i') . '.log';
-                    } else $this->logFile = self::$defaultLogFile;
-                    $this->addFile(self::$defaultLogFile);
-                }
-            }
-
+            $this->checkFile($logFile);
             return $this;
         }
 
         /**
          * 检测并创建日志文件
-         * @param string $filePath 日志文件路径
+         * @param string|null $filePath 日志文件路径
          * @throws Error
          */
-        private function addFile(string $filePath): void {
-            $firstLine = '-----' . date('Y-m-d H:i:s') . ' ' . basename(__FILE__) . '-----' . PHP_EOL;
+        private function checkFile(string|null $filePath): void {
+            if (empty($filePath)) {
+                $this->logFileHandle = null;
+                return;
+            }
 
+            if (in_array(realpath($filePath),self::$allLogFileHandles)) {
+                $this->logFileHandle = self::$allLogFileHandles[realpath($filePath)];
+                return;
+            }
+
+            $firstLine = '';
             if (file_exists($filePath)) {
                 if (!is_writable($filePath)) {
-                    $this->enabledCreateLogFile = false;
                     throw new Error('Log file: ' . $filePath . ' is not writable');
                 }
                 if (is_dir($filePath)) {
-                    $this->enabledCreateLogFile = false;
                     throw new Error('Log file: ' . $filePath . ' is a directory');
                 }
+            } else if (!is_dir(dirname($filePath))) mkdir(dirname($filePath),0777,true);
 
-                file_put_contents($filePath,PHP_EOL . $firstLine,FILE_APPEND);
-            } else {
-                if (!is_dir(dirname($filePath))) mkdir(dirname($filePath),0777,true);
-                file_put_contents($filePath,$firstLine);
+            self::$allLogFileHandles[realpath($filePath)] = $this->logFileHandle;
+
+            // 处理配置中的逻辑
+            if (!empty($this->inLogFileConfig['inTitle'])) {
+                if (
+                    !empty($this->inLogFileConfig['logHeader']) &&
+                    is_string($this->inLogFileConfig['logHeader'])
+                ) $firstLine = $this->inLogFileConfig['logHeader'];
+
+                $firstLine .= '----- ';
+
+                if (
+                    !empty($this->inLogFileConfig['inTitle']['showDate']) &&
+                    is_bool($this->inLogFileConfig['inTitle']['showDate']) &&
+                    $this->inLogFileConfig['inTitle']['showDate']
+                ) $firstLine .= date('Y-m-d H:i:s') . ' ';
+
+                if (
+                    !empty($this->inLogFileConfig['inTitle']['category']) &&
+                    is_string($this->inLogFileConfig['inTitle']['category'])
+                ) $firstLine .= $this->inLogFileConfig['inTitle']['category'] . ' ';
+
+                $firstLine .= '-----' . PHP_EOL;
             }
+
+            $this->logFileHandle = fopen($filePath,'a');
+            fwrite($this->logFileHandle,$firstLine);
         }
 
-        /** 是否创建日志文件 @return bool  */
-        public function isCreateLogFile(): bool { return $this->enabledCreateLogFile; }
-
-        /** 日志文件路径 @return string  */
-        public function getLogFile(): string { return $this->logFile; }
+        /** 返回日志文件句柄 @return resource|null */
+        public function getLogFileHandle() { return $this->logFileHandle; }
 
         /** 是否输出到终端 @return bool  */
         public function isConsoleLog(): bool { return $this->enabledConsoleLog; }
 
-        /** 是否显示日期 @return bool  */
-        public function isShowDate(): bool { return $this->showDate; }
+        /** 返回终端的配置 @return array */
+        public function getTerminalConfig(): array { return $this->inTerminalConfig; }
 
-        /** 是否显示日志级别 @return bool  */
-        public function isShowLevel(): bool { return $this->showLevel; }
+        /** 返回日志文件的配置 @return array */
+        public function getLogFileConfig(): array { return $this->inLogFileConfig; }
 
-        /** 返回指定的日志样式 @return array  */
+        /**
+         * 返回指定的日志样式
+         * @param int $level
+         * @return array
+         */
         public function getLogStyles(int $level = LoggerStyles::Info->value): array {
-            return $this->logStyles[$level] ?? self::defaultLogStyles[$level] ?? ['Default','Default',null];
+            return $this->logStyles[$level] ?? DefaultLoggerConfig::defaultLogStyles[$level] ?? ['Default','Default',null];
         }
     }

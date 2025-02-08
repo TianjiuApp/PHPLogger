@@ -1,5 +1,15 @@
 <?php
     /**
+     *
+     *  ______  _   _ ______  _
+     *  | ___ \| | | || ___ \| |
+     *  | |_/ /| |_| || |_/ /| |      ___    __ _   __ _   ___  _ __
+     *  |  __/ |  _  ||  __/ | |     / _ \  / _` | / _` | / _ \| '__|
+     *  | |    | | | || |    | |____| (_) || (_| || (_| ||  __/| |
+     *  \_|    \_| |_/\_|    \_____/ \___/  \__, | \__, | \___||_|
+     *                                       __/ |  __/ |
+     *                                      |___/  |___/
+     *
      * This file is part of PHPLogger.
      *
      * Licensed under The MIT License
@@ -32,12 +42,14 @@
         /**
          * 输出日志到终端或写入到文件
          * @param string $message 日志信息
+         * @param string|null $category 日志类型
          * @param int $level 日志级别
          * @param LoggerConfig|null $context 配置对象
          * @return void
          */
         public static function returnLog(
             string $message,
+            string|null $category = 'Main',
             int $level = LoggerStyles::Info->value,
             LoggerConfig|null $context = null
         ): void {
@@ -47,67 +59,135 @@
                 }
                 $context = self::$globalConfig;
             }
+            
+            if ($context->getLogFileHandle() !== null) {
+                $logMessage = '';
+                $logFileConfig = $context->getLogFileConfig();
+                
+                if (
+                    !empty($logFileConfig['logHeader']) &&
+                    is_string($logFileConfig['logHeader'])
+                ) $logMessage .= $logFileConfig['logHeader'];
+                    
+                if (
+                    !empty($logFileConfig['inLine']['showDate']) &&
+                    is_bool($logFileConfig['inLine']['showDate'])
+                ) $logMessage .= "[".date("Y-m-d H:i:s")."]";
+                
+                if (
+                    !empty($logFileConfig['inLine']['showCategory']) &&
+                    is_bool($logFileConfig['inLine']['showCategory']) &&
+                    !empty($category) && is_string($category)
+                ) $logMessage .= "[$category]";
+                
+                if (
+                    !empty($logFileConfig['inLine']['showLevel']) &&
+                    is_bool($logFileConfig['inLine']['showLevel'])
+                ) $logMessage .= "[".self::handleLevelString($level)."]";
+                
+                if (empty($logMessage)) $logMessage .= $message . PHP_EOL; else $logMessage .= " $message" . PHP_EOL;
+                fwrite($context->getLogFileHandle(),$logMessage);
+            }
+            
+            if ($context->isConsoleLog()) {
+                $logMessage = '';
+                $terminalConfig = $context->getTerminalConfig();
 
-            if ($level == LoggerStyles::NoneStyle->value) $rawMessageStr = $newMessageStr = $message . PHP_EOL;
-            else {
-                $rawMessageStr = '';
-                if ($context->isShowDate()) $rawMessageStr .= "[".date("Y-m-d H:i:s")."]";
-                if ($context->isShowLevel()) self::handleLevelString($rawMessageStr,$level);
+                if (
+                    !empty($terminalConfig['logHeader']) &&
+                    is_string($terminalConfig['logHeader'])
+                ) $logMessage .= $terminalConfig['logHeader'];
 
-                if (!$context->isShowDate() && !$context->isShowLevel()) {
-                    $rawMessageStr = $message;
-                } else {
-                    $rawMessageStr .= " $message";
+                if (
+                    !empty($terminalConfig['showDate']) &&
+                    is_bool($terminalConfig['showDate'])
+                ) $logMessage .= "[".date("Y-m-d H:i:s")."]";
+
+                if (
+                    !empty($terminalConfig['showCategory']) &&
+                    is_bool($terminalConfig['showCategory']) &&
+                    !empty($category) && is_string($category)
+                ) $logMessage .= "[$category]";
+
+                if (
+                    !empty($terminalConfig['showLevel']) &&
+                    is_bool($terminalConfig['showLevel']) &&
+                    $level !== LoggerStyles::NoneStyle->value
+                ) $logMessage .= "[".self::handleLevelString($level)."]";
+
+                if (empty($logMessage)) $logMessage .= $message; else $logMessage .= " $message";
+
+                if ($level !== LoggerStyles::NoneStyle->value) {
+                    $messageStyle = $context->getLogStyles($level);
+                    $logMessage = new Color(
+                        $logMessage,
+                        $messageStyle[0] ?? 'Default',
+                        $messageStyle[1] ?? 'Default',
+                        $messageStyle[2] ?? null
+                    );
                 }
 
-                $rawMessageStr .= PHP_EOL;
-
-                $messageStyle = $context->getLogStyles($level);
-
-                $newMessageStr = new Color(
-                    $rawMessageStr,
-                    $messageStyle[0] ?? 'Default',
-                    $messageStyle[1] ?? 'Default',
-                    $messageStyle[2] ?? null
-                );
+                echo $logMessage . PHP_EOL;
             }
-
-            if ($context->isCreateLogFile()) file_put_contents($context->getLogFile(),$rawMessageStr,FILE_APPEND);
-            if ($context->isConsoleLog()) echo $newMessageStr;
         }
 
         /**
          * 处理日志级别字符串
-         * @param string $data 待处理字符串
          * @param int $level 日志级别
-         * @return void
+         * @return string
          */
-        private static function handleLevelString(string &$data,int $level): void {
-            $levelStr = match ($level) {
-                LoggerStyles::Info->value => "INFO",
-                LoggerStyles::Warning->value => "WARNING",
-                LoggerStyles::Error->value => "ERROR",
-                LoggerStyles::Debug->value => "DEBUG",
-                LoggerStyles::Notice->value => "NOTICE",
-                LoggerStyles::Critical->value => "CRITICAL",
-                default => "UNKNOWN"
+        private static function handleLevelString(int $level): string {
+            return match ($level) {
+                LoggerStyles::Info->value => "Info",
+                LoggerStyles::Warning->value => "Warning",
+                LoggerStyles::Error->value => "Error",
+                LoggerStyles::Debug->value => "Debug",
+                LoggerStyles::Notice->value => "Notice",
+                LoggerStyles::Critical->value => "Critical",
+                default => "Unknown"
             };
-            $data .= "[$levelStr]";
         }
+        public static function setGlobalConfig(LoggerConfig $context): void { self::$globalConfig = $context; }
 
-        public static function setGlobalConfig(LoggerConfig $config): void { self::$globalConfig = $config; }
+        public static function warning(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Warning->value,$context); }
 
-        public static function warning(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Warning->value,$context); }
+        public static function info(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Info->value,$context); }
 
-        public static function info(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Info->value,$context); }
+        public static function error(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Error->value,$context); }
 
-        public static function error(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Error->value,$context); }
+        public static function debug(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Debug->value,$context); }
 
-        public static function debug(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Debug->value,$context); }
+        public static function notice(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Notice->value,$context); }
 
-        public static function notice(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Notice->value,$context); }
+        public static function critical(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::Critical->value,$context); }
 
-        public static function critical(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::Critical->value,$context); }
-
-        public static function noneStyle(string $message,LoggerConfig|null $context = null): void { self::returnLog($message,LoggerStyles::NoneStyle->value,$context); }
+        public static function noneStyle(
+            string $message,
+            string|null $category = 'Main',
+            LoggerConfig|null $context = null
+        ): void { self::returnLog($message,$category,LoggerStyles::NoneStyle->value,$context); }
     }
