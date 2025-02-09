@@ -1,5 +1,15 @@
 <?php
     /**
+     *
+     *   ______  _   _ ______  _
+     *   | ___ \| | | || ___ \| |
+     *   | |_/ /| |_| || |_/ /| |      ___    __ _   __ _   ___  _ __
+     *   |  __/ |  _  ||  __/ | |     / _ \  / _` | / _` | / _ \| '__|
+     *   | |    | | | || |    | |____| (_) || (_| || (_| ||  __/| |
+     *   \_|    \_| |_/\_|    \_____/ \___/  \__, | \__, | \___||_|
+     *                                        __/ |  __/ |
+     *                                       |___/  |___/
+     *
      * This file is part of PHPLogger.
      *
      * Licensed under The MIT License
@@ -14,7 +24,6 @@
 
     namespace PHPLogger;
 
-    use AllowDynamicProperties;
     use PHPLogger\AnsiCodes\TerminalFontTypes;
 
     /**
@@ -141,7 +150,7 @@
         /**
          * 返回终端光标动作代码
          * @param string $terminalCursorType 终端光标动作类型
-         * @param string ...$terminalCursorArgs 终端光标动作参数
+         * @param string|int ...$terminalCursorArgs 终端光标动作参数
          * @return string
          */
         public static function terminalCursorAction(string $terminalCursorType,string|int ...$terminalCursorArgs):string {
