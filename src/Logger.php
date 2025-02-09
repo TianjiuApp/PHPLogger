@@ -29,8 +29,6 @@
     use PHPLogger\LoggerStyles;
     use PHPLogger\Color;
 
-    date_default_timezone_set("Asia/Shanghai");
-
     /**
      * PHP based logger
      */
