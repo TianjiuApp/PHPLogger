@@ -36,6 +36,7 @@
             LoggerStyles::Debug->value => ['Blue','Default',["Bold"]],
             LoggerStyles::Notice->value => ['Green','Default',["Bold"]],
             LoggerStyles::Critical->value => ['Red','Default',null],
+            LoggerStyles::Line->value => ['White','Default',null]
         ];
 
         public const array defaultTerminalConfig = [

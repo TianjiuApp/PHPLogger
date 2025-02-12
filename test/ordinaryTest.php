@@ -34,6 +34,9 @@
     // Error Log
     Logger::error('This is an error log');
 
+    // Dividing Line
+    Logger::line('This is the dividing line');
+
     // Debug Log
     Logger::debug('This is a debug log');
 

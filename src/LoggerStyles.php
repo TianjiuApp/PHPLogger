@@ -35,4 +35,7 @@
 
         /** 无样式日志类别 */
         case NoneStyle = 0;
+
+        /** 分隔行类别 */
+        case Line = 7;
     }

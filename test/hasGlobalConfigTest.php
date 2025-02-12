@@ -41,7 +41,8 @@
             LoggerStyles::Error->value => ['Red','Default',['Underscore']],
             LoggerStyles::Debug->value => ['White','Magenta',['Underscore']],
             LoggerStyles::Notice->value => ['Red','Cyan'],
-            LoggerStyles::Critical->value => ['Cyan','Red']
+            LoggerStyles::Critical->value => ['Cyan','Red'],
+            LoggerStyles::Line->value => ['Magenta','Cyan',['Bold']],
         ]
     ));
 
@@ -53,6 +54,9 @@
 
     // Error Log
     Logger::error('This is an error log');
+
+    // Dividing Line
+    Logger::line('This is the dividing line');
 
     // Debug Log
     Logger::debug('This is a debug log');

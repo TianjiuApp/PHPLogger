@@ -97,9 +97,12 @@
                 if (!is_writable($filePath)) {
                     throw new Error('Log file: ' . $filePath . ' is not writable');
                 }
+
                 if (is_dir($filePath)) {
                     throw new Error('Log file: ' . $filePath . ' is a directory');
                 }
+
+                $firstLine .= PHP_EOL;
             } else if (!is_dir(dirname($filePath))) mkdir(dirname($filePath),0777,true);
 
             self::$allLogFileHandles[realpath($filePath)] = $this->logFileHandle;
@@ -109,14 +112,13 @@
                 if (
                     !empty($this->inLogFileConfig['logHeader']) &&
                     is_string($this->inLogFileConfig['logHeader'])
-                ) $firstLine = $this->inLogFileConfig['logHeader'];
+                ) $firstLine .= $this->inLogFileConfig['logHeader'];
 
                 $firstLine .= '----- ';
 
                 if (
                     !empty($this->inLogFileConfig['inTitle']['showDate']) &&
-                    is_bool($this->inLogFileConfig['inTitle']['showDate']) &&
-                    $this->inLogFileConfig['inTitle']['showDate']
+                    is_bool($this->inLogFileConfig['inTitle']['showDate'])
                 ) $firstLine .= date('Y-m-d H:i:s') . ' ';
 
                 if (

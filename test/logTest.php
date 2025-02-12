@@ -51,10 +51,13 @@
     // Warning Log
     Logger::warning('This is a warning log',"Test1",$logConfig);
 
+    // Dividing Line
+    Logger::line('This is the dividing line',"Test2",$logConfig);
+
     // Error Log
-    Logger::error('This is an error log',"Test2",$logConfig);
+    Logger::error('This is an error log',"Test3",$logConfig);
 
     // Debug Log
-    Logger::debug('This is a debug log',"Test3",$logConfig);
+    Logger::debug('This is a debug log',"Test4",$logConfig);
 
     Logger::info('All Done!');

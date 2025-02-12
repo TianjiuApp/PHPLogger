@@ -141,4 +141,17 @@
          * @return void
          */
         public static function setGlobalConfig(LoggerConfig $context): void;
+
+        /**
+         * 输出分割线
+         * @param string $message 日志信息
+         * @param string|null $category 日志类别
+         * @param LoggerConfig|null $context 日志配置对象
+         * @return void
+         */
+        public static function line(
+            string $message,
+            string|null $category,
+            LoggerConfig|null $context = null
+        ): void;
     }
