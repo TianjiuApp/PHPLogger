@@ -179,7 +179,8 @@
             if (empty(self::$ansiCode)) {
                 if (strtoupper(substr(PHP_OS,0,3)) === 'WIN') {
                     self::$ansiCode = self::getAnsiCodeForWindows().'[';
-                } else if (strtoupper(substr(PHP_OS,0,3)) === 'LIN') {
+                } else {
+                    // 因为MacOS和Linux同为类Unix系统，所以走同一个逻辑
                     self::$ansiCode = "\033[";
                 }
             }
