@@ -9,6 +9,9 @@
   <a href="https://github.com/TianjiuApp" title="点击访问">
     <img src="https://img.shields.io/badge/Author-TianjiuApp%20Team-blue.svg">
   </a>
+  <a href="https://github.com/TianjiuApp/PHPLogger/blob/master/README.md" title="点击访问">
+    <img src="https://img.shields.io/badge/Readme-English-green.svg">
+  </a>
 </p>
 
 <div align="center">
@@ -25,7 +28,7 @@ PHPLogger 是一个基于 PHP 的日志记录工具，它可以......
 ## 💽 使用方法
 请看[Wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
 
-## 🐞 Bug 反馈 && 贡献代码
+## 🐞 Bug 反馈 & 贡献代码
 
 如果您在使用过程中遇到问题，请 [发起issues](https://github.com/TianjiuApp/PHPLogger/issues) 进行反馈。
 
