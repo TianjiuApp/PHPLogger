@@ -32,12 +32,6 @@
     class Color implements ColorInterface {
 
         /**
-         * Ansi Code
-         * @var string
-         **/
-        public static string $ansiCode = "";
-
-        /**
          * 构造函数执行后返回的结果
          * @var string
          */
@@ -85,16 +79,10 @@
             string|null $terminalForegroundColor = "Default",
             array|null $terminalFontTypes = null
         ) :string {
-            self::setAnsiCode();
-
-            if (!self::$ansiCode) {
-                return $data;
-            }
-
             $terminalFontColor = ucfirst(strtolower($terminalFontColor));
             $terminalForegroundColor = ucfirst(strtolower($terminalForegroundColor));
 
-            $finalData = self::$ansiCode;
+            $finalData = "\033[";
             $finalData .= defined("PHPLogger\AnsiCodes\TerminalFontColors::$terminalFontColor")
                 ? constant("PHPLogger\AnsiCodes\TerminalFontColors::$terminalFontColor")->value.';'
                 : $terminalFontColor.';';
@@ -114,7 +102,7 @@
                 }
             }
 
-            $finalData .= 'm' . $data . self::$ansiCode . TerminalFontTypes::End->value . 'm';
+            $finalData .= 'm' . $data . "\033[" . TerminalFontTypes::End->value . 'm';
             return $finalData;
         }
 
@@ -154,10 +142,6 @@
          * @return string
          */
         public static function terminalCursorAction(string $terminalCursorType,string|int ...$terminalCursorArgs):string {
-            self::setAnsiCode();
-
-            if (!self::$ansiCode) return "";
-
             if (defined("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")) {
                 $terminalCursorTypeData = explode(',',constant("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")->value);
                 $terminalCursorActionData = $terminalCursorTypeData[0];
@@ -167,22 +151,7 @@
                     $terminalCursorActionData = str_replace($terminalCursorTypeArgs,$terminalCursorArgs,$terminalCursorActionData);
                 }
 
-                return self::$ansiCode.$terminalCursorActionData;
-            } else return self::$ansiCode.$terminalCursorType;
-        }
-
-        /**
-         * 在对象中设置Ansi代码
-         * @return void
-         */
-        private static function setAnsiCode():void {
-            if (empty(self::$ansiCode)) {
-                if (strtoupper(substr(PHP_OS,0,3)) === 'WIN') {
-                    self::$ansiCode = self::getAnsiCodeForWindows().'[';
-                } else {
-                    // 因为MacOS和Linux同为类Unix系统，所以走同一个逻辑
-                    self::$ansiCode = "\033[";
-                }
-            }
+                return "\033[" . $terminalCursorActionData;
+            } else return "\033[" . $terminalCursorType;
         }
     }
