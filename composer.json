@@ -1,6 +1,8 @@
 {
     "name": "tianjiuapp/php-logger",
-    "description": "This is PHP based logger",
+    "description": "基于PHP的日志记录器 / This is PHP based logger",
+    "keywords": ["php", "log", "logger", "ansi"],
+    "homepage": "https://github.com/TianjiuApp/PHPLogger",
     "type": "library",
     "require": {
         "php": ">=8.2"
@@ -22,5 +24,8 @@
             "email": "budingxiaocai@yeah.net"
         }
     ],
-    "minimum-stability" : "stable"
+    "minimum-stability" : "stable",
+    "require-dev": {
+        "phpunit/phpunit": "12.0.7"
+    }
 }
