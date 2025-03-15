@@ -89,7 +89,7 @@
 
             $finalData .= defined("PHPLogger\AnsiCodes\TerminalBackgroundColor::$terminalForegroundColor")
                 ? constant("PHPLogger\AnsiCodes\TerminalBackgroundColor::$terminalForegroundColor")->value
-                : $terminalFontColor;
+                : $terminalForegroundColor;
 
             if (!empty($terminalFontTypes)) {
                 foreach ($terminalFontTypes as $terminalFontType) {
@@ -112,14 +112,16 @@
          * @param string|int ...$terminalCursorArgs 终端光标动作参数
          * @return string
          */
-        public static function terminalCursorAction(string $terminalCursorType,string|int ...$terminalCursorArgs):string {
+        public static function terminalCursorAction(string $terminalCursorType,string|int ...$terminalCursorArgs): string {
             if (defined("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")) {
-                $terminalCursorTypeData = explode(',',constant("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")->value);
+                $terminalCursorTypeData = explode(',', constant("PHPLogger\AnsiCodes\TerminalCursorTypes::$terminalCursorType")->value);
                 $terminalCursorActionData = $terminalCursorTypeData[0];
 
                 if (count($terminalCursorTypeData) > 1) {
-                    $terminalCursorTypeArgs = array_slice($terminalCursorTypeData,1);
-                    $terminalCursorActionData = str_replace($terminalCursorTypeArgs,$terminalCursorArgs,$terminalCursorActionData);
+                    if (count($terminalCursorArgs) < count($terminalCursorTypeData) - 1) return "\033[" . $terminalCursorType;
+
+                    $terminalCursorTypeArgs = array_slice($terminalCursorTypeData, 1);
+                    $terminalCursorActionData = str_replace($terminalCursorTypeArgs, $terminalCursorArgs, $terminalCursorActionData);
                 }
 
                 return "\033[" . $terminalCursorActionData;

@@ -73,7 +73,6 @@
             $this->logStyles = $logStyles ?? DefaultLoggerConfig::defaultLogStyles;
 
             $this->checkFile($logFile);
-            return $this;
         }
 
         /**
