@@ -26,7 +26,7 @@ PHPLogger 是一个基于 PHP 的日志记录工具，它可以......
 3. 它提供了多种日志级别，方便你根据需要记录不同类型的信息。
 
 ## 💽 使用方法
-请看[Wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
+请看[文档](https://github.com/TianjiuApp/PHPLogger/wiki)
 
 ## 🐞 Bug 反馈 & 贡献代码
 
