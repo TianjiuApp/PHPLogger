@@ -5,12 +5,13 @@
     "homepage": "https://github.com/TianjiuApp/PHPLogger",
     "type": "library",
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.3"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "PHPLogger\\": "src/"
+            "PHPLogger\\": "src/",
+            "PHPLogger\\Tests\\": "tests/"
         }
     },
     "authors": [
