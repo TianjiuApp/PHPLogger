@@ -28,7 +28,7 @@ PHPLogger is a PHP based logging tool , it that can ......
 
 ## 💽 usage method
 
-Please see [Wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
+Please see [wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
 
 ## 🐞 Bug feedback & contributed code
 
