@@ -3,7 +3,7 @@
     "description": "This is PHP based logger",
     "type": "library",
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.2"
     },
     "license": "MIT",
     "autoload": {
@@ -22,5 +22,5 @@
             "email": "budingxiaocai@yeah.net"
         }
     ],
-    "minimum-stability" : "dev"
+    "minimum-stability" : "stable"
 }
