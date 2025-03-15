@@ -31,7 +31,7 @@
     interface LoggerInterface {
 
         /**
-         * 输出指定级别的日志，下面函数的基础实现
+         * 输出指定级别的日志
          * @param string $message 日志信息
          * @param string|null $category 日志类型
          * @param int $level 日志级别
@@ -45,95 +45,12 @@
         ) :void;
 
         /**
-         * 输出警告级别的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
+         * 快速方法的调用
+         * @param string $name
+         * @param array $args
          * @return void
          */
-        public static function warning(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出错误级别的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function error(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出普通级别的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function info(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出调试级别的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function debug(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出严重级别的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function critical(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出通知日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function notice(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
-
-        /**
-         * 输出无样式的日志
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function noneStyle(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ) :void;
+        public static function __callStatic(string $name, array $args): void;
 
         /**
          * 设置全局配置
@@ -141,17 +58,4 @@
          * @return void
          */
         public static function setGlobalConfig(LoggerConfig $context): void;
-
-        /**
-         * 输出分割线
-         * @param string $message 日志信息
-         * @param string|null $category 日志类别
-         * @param LoggerConfig|null $context 日志配置对象
-         * @return void
-         */
-        public static function line(
-            string $message,
-            string|null $category,
-            LoggerConfig|null $context = null
-        ): void;
     }
