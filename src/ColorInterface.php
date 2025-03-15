@@ -61,10 +61,4 @@
          * @return string
          */
         public static function terminalCursorAction(string $terminalCursorType, string|int ...$terminalCursorArgs) :string;
-
-        /**
-         * 在Windows平台下获取Ansi Code
-         * @return false|string
-         */
-        public static function getAnsiCodeForWindows() :string|false;
     }

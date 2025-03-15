@@ -107,35 +107,6 @@
         }
 
         /**
-         * 在Windows平台下获取Ansi Code
-         * @return false|string
-         */
-        public static function getAnsiCodeForWindows():false|string {
-            // 解析输出以获取构建号
-            if (preg_match('/build (\d+) \(/',php_uname('v'),$matches)) $build = $matches[1];
-            else return false;
-
-            // 检查 ConsoleHost v2 是否可用
-            if ($build >= 10586) {
-                $isV2 = true;
-                // 检查注册表项 ForceV2 的值
-                $regOutput = [];
-                exec('reg query HKCU\\Console /v ForceV2',$regOutput);
-                foreach ($regOutput as $line) {
-                    if (str_contains($line,'0x0')) {
-                        $isV2 = false;
-                        break;
-                    }
-                }
-            } else $isV2 = false;
-
-            if ($isV2) {
-                exec("for /f %a in ('echo prompt \$E ^| cmd') do echo %a", $promptOutput);
-                return $promptOutput[count($promptOutput)-1];
-            } else return false;
-        }
-
-        /**
          * 返回终端光标动作代码
          * @param string $terminalCursorType 终端光标动作类型
          * @param string|int ...$terminalCursorArgs 终端光标动作参数
