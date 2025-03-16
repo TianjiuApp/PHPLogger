@@ -5,7 +5,7 @@
     "homepage": "https://github.com/TianjiuApp/PHPLogger",
     "type": "library",
     "require": {
-        "php": ">=8.3"
+        "php": ">=8.2"
     },
     "license": "MIT",
     "autoload": {

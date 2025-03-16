@@ -25,9 +25,8 @@
     namespace PHPLogger\Config;
 
     use PHPLogger\LoggerStyles;
-    use PHPLogger\Config\LoggerConfigInterface;
     use PHPLogger\Config\Default\LoggerConfig as DefaultLoggerConfig;
-    use \Error;
+    use Error;
 
     /**
      * Config Class for Logger

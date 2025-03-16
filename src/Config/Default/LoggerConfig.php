@@ -29,7 +29,7 @@
     class LoggerConfig {
 
         /** 默认日志样式 @var array  */
-        public const array defaultLogStyles = [
+        public const defaultLogStyles = [
             LoggerStyles::Info->value => ['White','Default',null],
             LoggerStyles::Warning->value => ['Yellow','Default',null],
             LoggerStyles::Error->value => ['Red','Default',["Bold"]],
@@ -39,14 +39,14 @@
             LoggerStyles::Line->value => ['White','Default',null]
         ];
 
-        public const array defaultTerminalConfig = [
+        public const defaultTerminalConfig = [
             "showDate" => true,
             "showLevel" => true,
             "showCategory" => true,
             "logHeader" => null
         ];
 
-        public const array defaultLogFileConfig = [
+        public const defaultLogFileConfig = [
             "logHeader" => "> ",
             "inTitle" => [
                 "showDate" => true,
