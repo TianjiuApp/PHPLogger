@@ -30,14 +30,14 @@
 
     /**
      * PHP based logger
-     * @method static void info(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出普通级别的日志
-     * @method static void warning(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出警告级别的日志
-     * @method static void error(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出错误级别的日志
-     * @method static void debug(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出调试级别的日志
-     * @method static void notice(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出通知级别的日志
-     * @method static void critical(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出严重级别的日志
-     * @method static void noneStyle(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出无样式的日志
-     * @method static void line(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出分割线
+     * @method static \void info(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出普通级别的日志
+     * @method static \void warning(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出警告级别的日志
+     * @method static \void error(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出错误级别的日志
+     * @method static \void debug(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出调试级别的日志
+     * @method static \void notice(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出通知级别的日志
+     * @method static \void critical(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出严重级别的日志
+     * @method static \void noneStyle(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出无样式的日志
+     * @method static \void line(string $message, string|null $category = null, LoggerConfig|null $context = null) 输出分割线
      */
     class Logger implements LoggerInterface {
 
