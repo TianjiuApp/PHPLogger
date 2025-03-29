@@ -32,7 +32,7 @@ PHPLogger 是一个基于 PHP 的日志记录工具，它可以......
 
 如果您在使用过程中遇到问题，请 [发起issues](https://github.com/TianjiuApp/PHPLogger/issues) 进行反馈。
 
-如果您愿意帮助我们让PHPLogger变得更好，请为我们提交PR。
+如果您愿意帮助我们让PHPLogger变得更好，请给我们提交PR。
 
 ## ⭐ 求 Star
 
