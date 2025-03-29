@@ -34,7 +34,7 @@ Please see [wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
 
 If you encounter any problems during use, please [initiate issues](https://github.com/TianjiuApp/PHPLogger/issues) Provide feedback.
 
-If you are willing to help us make PHPLogger better, please submit a pull request for us.
+If you are willing to help us make PHPLogger better, please submit a pull request to us.
 
 ## ⭐ Seeking Star
 
