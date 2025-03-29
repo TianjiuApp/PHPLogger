@@ -26,7 +26,7 @@ PHPLogger is a PHP based logging tool , it that can ......
 2. In the terminal, logs at all levels are colored accordingly. In addition, you can customize the color for each level.
 3. It provides multiple log levels, making it convenient for you to record different types of information according to your needs.
 
-## 💽 usage method
+## 💽 Usage method
 
 Please see [wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
 
@@ -34,7 +34,7 @@ Please see [wiki](https://github.com/TianjiuApp/PHPLogger/wiki)
 
 If you encounter any problems during use, please [initiate issues](https://github.com/TianjiuApp/PHPLogger/issues) Provide feedback.
 
-If you are willing to help us make PHPLogger better, please fork this repository and submit PR.
+If you are willing to help us make PHPLogger better, please submit a pull request for us.
 
 ## ⭐ Seeking Star
 
